@@ -7,6 +7,26 @@ const TOPICS = process.env.KAFKA_TOPICS
     ? process.env.KAFKA_TOPICS.split(',')
     : ['order-events', 'account-events'];
 
+const express = require('express');
+const client = require('prom-client');
+const app = express();
+const metricsPort = process.env.PORT || 8080;
+
+client.collectDefaultMetrics({ prefix: 'notification_service_' });
+
+app.get('/metrics', async (req, res) => {
+    try {
+        res.set('Content-Type', client.register.contentType);
+        res.end(await client.register.metrics());
+    } catch (ex) {
+        res.status(500).send(ex);
+    }
+});
+
+app.listen(metricsPort, () => {
+    console.log(`[NotificationService] Metrics/HTTP server listening on port ${metricsPort}`);
+});
+
 const kafka = new Kafka({
     clientId: KAFKA_CLIENT_ID,
     brokers: KAFKA_BROKERS,
@@ -91,10 +111,11 @@ const shutdown = async (signal) => {
         console.log('[NotificationService] Kafka consumer disconnected.');
         process.exit(0);
     } catch (error) {
-        console.error('[NotificationService] Error during graceful shutdown:', err);
+        console.error('[NotificationService] Error during graceful shutdown:', error);
         process.exit(1);
     }
 };
+
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
 
