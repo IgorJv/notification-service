@@ -111,10 +111,11 @@ const shutdown = async (signal) => {
         console.log('[NotificationService] Kafka consumer disconnected.');
         process.exit(0);
     } catch (error) {
-        console.error('[NotificationService] Error during graceful shutdown:', err);
+        console.error('[NotificationService] Error during graceful shutdown:', error);
         process.exit(1);
     }
 };
+
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
 
