@@ -12,7 +12,7 @@ const client = require('prom-client');
 const app = express();
 const metricsPort = process.env.PORT || 8080;
 
-client.collectDefaultMetrics({ prefix: 'notification_service_' });
+client.collectDefaultMetrics();
 
 app.get('/metrics', async (req, res) => {
     try {
