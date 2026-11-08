@@ -19,7 +19,7 @@ app.get('/metrics', async (req, res) => {
         res.set('Content-Type', client.register.contentType);
         res.end(await client.register.metrics());
     } catch (ex) {
-        console.error(ex);
+        console.error(`[metrics] exception: ${ex}`);
         res.status(500).send(ex);
     }
 });
