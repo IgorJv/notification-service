@@ -121,6 +121,6 @@ process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
 
 run().catch((err) => {
-    console.error('[NotificationService] Unhandled startup error:', err);
+    console.error('[NotificationService] Unhandled startup error: ', err);
     process.exit(1);
 });
